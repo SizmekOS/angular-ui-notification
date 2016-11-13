@@ -59,6 +59,8 @@ angular.module('ui-notification').provider('Notification', function() {
             args.onClose = args.onClose ? args.onClose : options.onClose;
             args.closeOnClick = (args.closeOnClick !== null && args.closeOnClick !== undefined) ? args.closeOnClick : options.closeOnClick;
             args.container = args.container ? args.container : options.container;
+            var container = document.querySelector(args.container);
+            startTop = container.offsetTop + options.startTop;
 
             $http.get(args.template,{cache: $templateCache}).success(function(template) {
 
@@ -96,7 +98,7 @@ angular.module('ui-notification').provider('Notification', function() {
 
                         element.css(element._positionY, top + 'px');
                         if (element._positionX == 'center') {
-                            element.css('left', parseInt(window.innerWidth / 2 - elWidth / 2) + 'px');
+                            element.css('left', parseInt(container.offsetLeft + container.offsetWidth / 2 - elWidth / 2) + 'px');
                         } else {
                             element.css(element._positionX, right + 'px');
                         }
@@ -145,14 +147,14 @@ angular.module('ui-notification').provider('Notification', function() {
 
                 setCssTransitions('none');
 
-                angular.element(document.querySelector(args.container)).append(templateElement);
+                angular.element(container).append(templateElement);
                 var offset = -(parseInt(templateElement[0].offsetHeight) + 50);
                 templateElement.css(templateElement._positionY, offset + "px");
                 messageElements.push(templateElement);
 
                 if(args.positionX == 'center'){
                     var elWidth = parseInt(templateElement[0].offsetWidth);
-                    templateElement.css('left', parseInt(window.innerWidth / 2 - elWidth / 2) + 'px');
+                    templateElement.css('left', parseInt(container.offsetLeft + container.offsetWidth / 2 - elWidth / 2) + 'px');
                 }
 
                 $timeout(function(){
