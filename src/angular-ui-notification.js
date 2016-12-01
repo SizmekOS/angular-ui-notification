@@ -55,7 +55,6 @@ angular.module('ui-notification').provider('Notification', function() {
 
             // fallback to document.body if no element is matching container selector
             var container = document.querySelector(args.container) || document.body;
-            startTop = container.offsetTop + options.startTop;
 
             $http.get(args.template,{cache: $templateCache}).success(function(template) {
 
@@ -65,8 +64,12 @@ angular.module('ui-notification').provider('Notification', function() {
                 scope.t = args.type.substr(0,1);
                 scope.delay = args.delay;
                 scope.onClose = args.onClose;
+                var containerRect = container.getBoundingClientRect();
 
                 var reposite = function() {
+                    containerRect = container.getBoundingClientRect();
+                    startTop = containerRect.top + options.startTop;
+
                     var j = 0;
                     var k = 0;
                     var lastTop = startTop;
@@ -93,7 +96,7 @@ angular.module('ui-notification').provider('Notification', function() {
 
                         element.css(element._positionY, top + 'px');
                         if (element._positionX == 'center') {
-                            element.css('left', parseInt(container.offsetLeft + container.offsetWidth / 2 - elWidth / 2) + 'px');
+                            element.css('left', parseInt(containerRect.left + containerRect.width / 2 - elWidth / 2) + 'px');
                         } else {
                             element.css(element._positionX, right + 'px');
                         }
@@ -149,7 +152,7 @@ angular.module('ui-notification').provider('Notification', function() {
 
                 if(args.positionX == 'center'){
                     var elWidth = parseInt(templateElement[0].offsetWidth);
-                    templateElement.css('left', parseInt(container.offsetLeft + container.offsetWidth / 2 - elWidth / 2) + 'px');
+                    templateElement.css('left', parseInt(containerRect.left + containerRect.width / 2 - elWidth / 2) + 'px');
                 }
 
                 $timeout(function(){
